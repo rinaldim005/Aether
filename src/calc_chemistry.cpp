@@ -52,7 +52,7 @@ void Chemistry::calc_chemistry(Neutrals &neutrals,
   // Calculate the chemical sources and losses
   // ----------------------------------------------------
 
-  calc_chemical_sources(neutrals, ions, report);
+  calc_chemical_sources(neutrals, ions, report, time);
 
   // ---------------------------------------------------------
   // Once sources and losses are done, solve for new densities

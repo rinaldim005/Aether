@@ -95,17 +95,12 @@ using json = nlohmann::json;
 // Defines the Extreme Ultraviolet radiation above the atmosphere
 #include "euv.h"
 
-// Contains the collision frequency calculation
-#include "collisions.h"
-
 // not done
 #include "calc_euv.h"
 // not done
 #include "chemistry.h"
-
-// Reads collision frequency from csv table
+// not done
 #include "read_collision_file.h"
-
 // not done
 #include "output.h"
 // not done

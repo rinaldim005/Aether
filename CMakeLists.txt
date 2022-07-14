@@ -67,6 +67,5 @@ target_link_libraries(aether PUBLIC ${NETCDF_LIBRARIES_C})
 #endif()
 
 # Set up links for executable
-file(CREATE_LINK ${CMAKE_BINARY_DIR}/aether
-                 ${PROJECT_SOURCE_DIR}/share/run/aether SYMBOLIC)
+
 

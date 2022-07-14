@@ -14,7 +14,8 @@
 
 void Chemistry::calc_chemical_sources(Neutrals &neutrals,
                                       Ions &ions,
-                                      Report &report) {
+                                      Report &report
+                                      Times time) {
 
   std::string function = "Chemistry::calc_chemical_sources";
   static int iFunction = -1;
@@ -27,8 +28,12 @@ void Chemistry::calc_chemical_sources(Neutrals &neutrals,
 
   // This is make change the same size as the grid:
   arma_cube change3d = neutrals.temperature_scgc;
-  // Then zero is out:
+  // Then zero it out:
   change3d.zeros();
+
+  // likewise for chemical heating:
+  arma_cube chemical_heating = neutrals.temperature_scgc;
+  chemical_heating.zeros();
 
   for (iReaction = 0; iReaction < nReactions; iReaction++) {
 
@@ -39,11 +44,48 @@ void Chemistry::calc_chemical_sources(Neutrals &neutrals,
 
     rate = reactions[iReaction].rate;
 
+    
+
     // First calculate the amount of change:
     //    Change is calculated as
     //    reaction rate * loss den 1 * loss den 2 (* loss den 3 if needed)
 
     change3d.fill(rate);
+
+    // check for type of temperature dependence and adjust
+    if (reactions[iReaction].type > 0) {
+      // use Ti by default
+      arma_cube temp = ions.ion_temperature_scgc;
+      std::string denom = reactions[iReaction].denominator;
+      if (denom == "Te") {
+        temp = ions.electron_temperature_scgc;
+      } else if (denom == "Tn") {
+        temp = neutrals.temperature_scgc;
+      }
+
+      if (reactions[iReaction].numerator && (reactions[iReaction].type == 1)) {
+        change3d = change3d / pow(reactions[iReaction].numerator/temp, reactions[iReaction].exponent);
+      } else if (reactions[iReaction].numerator && (reactions[iReaction].type == 2)) {
+        change3d = change3d % temp % exp(reactions[iReaction].numerator/temp);
+      }
+    }
+
+    // if temperature dependence is piecewise, only operate on cells within range
+    if (reactions[iReaction].min || reactions[iReaction].max) {
+      arma_cube temp = ions.ion_temperature_scgc;
+      std::string piecewiseTemp = reactions[iReaction].piecewiseVar;
+      if (piecewiseTemp == "Te") {
+        temp = ions.electron_temperature_scgc;
+      } else if (piecewiseTemp == "Tn") {
+        temp = neutrals.temperature_scgc;
+      }
+
+      change3d = change3d % (change3d > reactions[iReaction].min);
+
+      if (reactions[iReaction].max > 0) {
+        change3d = change3d % (change3d <= reactions[iReaction].max);
+      }
+    }
 
     for (iLoss = 0; iLoss < reactions[iReaction].nLosses; iLoss++) {
       IsNeutral = reactions[iReaction].losses_IsNeutral[iLoss];
@@ -54,6 +96,9 @@ void Chemistry::calc_chemical_sources(Neutrals &neutrals,
       else
         change3d = change3d % ions.species[id_].density_scgc;
     }
+
+    // calculate heat change
+    chemical_heating += change3d * reactions[iReaction].energy;
 
     // Second add change to the different consituents:
     for (iLoss = 0; iLoss < reactions[iReaction].nLosses; iLoss++) {
@@ -81,6 +126,11 @@ void Chemistry::calc_chemical_sources(Neutrals &neutrals,
           ions.species[id_].sources_scgc + change3d;
     }  // for iSource
   }  // for iReaction
+
+  // convert chemical heating to temperature change in K
+  precision_t dt = time.get_dt();
+  chemical_heating = chemical_heating * cE * dt / neutrals.Cv_scgc / neutrals.rho_scgc;
+  neutrals.temperature_scgc = neutrals.temperature_scgc + chemical_heating;
 
   report.exit(function);
 }

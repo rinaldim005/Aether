@@ -9,34 +9,33 @@
 // read in from the CSV file.
 // -----------------------------------------------------------------------------
 
-void calc_ion_neutral_coll_freq(Neutrals &neutrals, Ions &ions,
-                                Report &report) {
+void Ions::calc_ion_neutral_coll_freq(Neutrals neutrals, Report &report) {
 
-  std::string function = "calc_ion_neutral_coll_freq";
+  std::string function = "Ions::calc_ion_neutral_coll_freq";
   static int iFunction = -1;
   report.enter(function, iFunction);
   arma_cube t, one_minus_log;
 
   for (int iIon = 0; iIon < nIons; iIon++) {
-    if (ions.species[iIon].nu_ion_neutral_coef.size() > 0) {
+    if (species[iIon].nu_ion_neutral_coef.size() > 0) {
       for (int iNeutral = 0; iNeutral < nSpecies; iNeutral++) {
-        ions.species[iIon].nu_ion_neutral_vcgc[iNeutral].zeros();
+        species[iIon].nu_ion_neutral_vcgc[iNeutral].zeros();
 
-        if (ions.species[iIon].nu_is_resonant[iNeutral]) {
-          t = (ions.species[iIon].nu_in_res_tn_frac[iNeutral] *
+        if (species[iIon].nu_is_resonant[iNeutral]) {
+          t = (species[iIon].nu_in_res_tn_frac[iNeutral] *
                neutrals.temperature_scgc +
-               ions.species[iIon].nu_in_res_tn_frac[iNeutral] *
-               ions.temperature_scgc);
+               species[iIon].nu_in_res_tn_frac[iNeutral] *
+               ion_temperature_scgc);
           one_minus_log =
-            (1.0 - ions.species[iIon].nu_in_res_coef2[iNeutral] *
+            (1.0 - species[iIon].nu_in_res_coef2[iNeutral] *
              log10(t));
-          ions.species[iIon].nu_ion_neutral_vcgc[iNeutral] =
-            ions.species[iIon].nu_in_res_coef1[iNeutral] *
+          species[iIon].nu_ion_neutral_vcgc[iNeutral] =
+            species[iIon].nu_in_res_coef1[iNeutral] *
             neutrals.species[iNeutral].density_scgc %
             sqrt(t) % one_minus_log % one_minus_log;
         } else {
-          ions.species[iIon].nu_ion_neutral_vcgc[iNeutral] =
-            ions.species[iIon].nu_ion_neutral_coef[iNeutral] *
+          species[iIon].nu_ion_neutral_vcgc[iNeutral] =
+            species[iIon].nu_ion_neutral_coef[iNeutral] *
             neutrals.species[iNeutral].density_scgc;
         }
       }

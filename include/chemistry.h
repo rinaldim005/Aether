@@ -29,6 +29,21 @@ class Chemistry {
     precision_t energy;
     precision_t rate;
     precision_t branching_ratio;
+
+    // variables for temperature-dependent rate calculation
+    precision_t numerator;
+    std::string denominator;
+    precision_t exponent;
+    std::string piecewiseVar; // which temperature to use w/ min/max
+    int min; // temperatures within which to use the reaction
+    int max;
+    int type;
+
+    //variables for temperature-dependence above cutoff
+    /*precision_t rateAbove;
+    precision_t numeratorAbove;
+    std::string denominatorAbove;
+    precision_t exponentAbove;*/
   };
 
   std::vector<reaction_type> reactions;
