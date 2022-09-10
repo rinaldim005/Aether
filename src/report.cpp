@@ -19,6 +19,7 @@ Report::Report() {
   iVerbose = -2;
   divider = ">";
   divider_length = divider.length();
+  debugFunc = "";
   // Set iLevel to -1, so that the call in main takes it to 0:
   iLevel = -1;
 }
@@ -157,7 +158,7 @@ void Report::print(int iLevel, std::string output_string) {
 int Report::test_verbose(int iLevel) {
   int iPass = 0;
 
-  if (iLevel <= iVerbose) {
+  if (iLevel <= iVerbose || current_entry == debugFunc) {
     iPass = 1;
 
     for (int iL = 0; iL < iLevel; iL++)
@@ -191,6 +192,14 @@ void Report::set_timing_depth(int input) {
 
 void Report::set_timing_percent(float input) {
   TimingPercent = input;
+}
+
+// -----------------------------------------------------------------------
+// Set the specific function to report regardless of verbose level
+// -----------------------------------------------------------------------
+
+void Report::set_debug_func(std::string input) {
+  debugFunc = input;
 }
 
 // -----------------------------------------------------------------------
