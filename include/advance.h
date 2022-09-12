@@ -44,6 +44,7 @@ int advance(Planets &planet,
             Electrodynamics &electrodynamics,
             Indices &indices,
             Inputs &args,
-            Report &report);
+            Report &report,
+            PhysicsSwitches &physicsSwitches);
 
 #endif // INCLUDE_ADVANCE_H_

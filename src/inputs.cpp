@@ -13,7 +13,7 @@
 // The setting of initial values should probably be moved.
 // -----------------------------------------------------------------------
 
-Inputs::Inputs(Times &time, Report &report) {
+Inputs::Inputs(Times &time, Report &report, PhysicsSwitches &physicsSwitches) {
 
   // ------------------------------------------------
   // Set some defaults:
@@ -60,7 +60,7 @@ Inputs::Inputs(Times &time, Report &report) {
 
   // ------------------------------------------------
   // Now read the input file:
-  IsOk = read_inputs_json(time, report);
+  IsOk = read_inputs_json(time, report, physicsSwitches);
 
   if (!IsOk && iProc == 0)
     std::cout << "Error in reading input file!\n";

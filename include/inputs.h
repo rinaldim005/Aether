@@ -11,9 +11,9 @@ class Inputs {
 
 public:
 
-  Inputs(Times &time, Report &report);
+  Inputs(Times &time, Report &report, PhysicsSwitches &physicsSwitches);
   int read(Times &time, Report &report);
-  bool read_inputs_json(Times &time, Report &report);
+  bool read_inputs_json(Times &time, Report &report, PhysicsSwitches &physicsSwitches);
   int get_verbose();
   int get_verbose_proc();
   precision_t get_dt_euv();

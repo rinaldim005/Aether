@@ -8,6 +8,9 @@
 	"iProc" : 0,
 	"DebugFunction" : ""},
 
+	"PhysicsSwitches" : {
+	"Chemistry" : true},
+
     "Planet" : "earth",
 
     "BField" : "dipole",

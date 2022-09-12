@@ -22,10 +22,12 @@ int main() {
   static int iFunction = -1;
   report.enter(function, iFunction);
 
+  PhysicsSwitches physicsSwitches;
+
   try {
   
     // Create inputs (reading the input file):
-    Inputs input(time, report);
+    Inputs input(time, report, physicsSwitches);
     if (!input.is_ok())
       throw std::string("input initialization failed!");
 
@@ -138,7 +140,8 @@ int main() {
 		       electrodynamics,
 		       indices,
 		       input,
-		       report);
+		       report,
+           physicsSwitches);
 
       // Should write out some restart files every time we are done with
       // intermediate times.  Just so when we restart, we know that we can

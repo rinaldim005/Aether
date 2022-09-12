@@ -31,6 +31,10 @@ using arma_mat = arma::Mat<precision_t>;
 /// Armadillo type cube (three dimension) with compile-time precision.
 using arma_cube = arma::Cube<precision_t>;
 
+struct PhysicsSwitches {
+  bool chemistry;
+};
+
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -130,3 +134,5 @@ using json = nlohmann::json;
 #include "parallel.h"
 
 #endif  // INCLUDE_AETHER_H_
+
+

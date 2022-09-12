@@ -20,7 +20,8 @@ int advance(Planets &planet,
             Electrodynamics &electrodynamics,
             Indices &indices,
             Inputs &input,
-            Report &report) {
+            Report &report,
+            PhysicsSwitches &physicsSwitches) {
 
   int iErr = 0;
 
@@ -58,7 +59,7 @@ int advance(Planets &planet,
   calc_aurora(gGrid, neutrals, ions, input, report);
 
   neutrals.calc_conduction(gGrid, time, report);
-  chemistry.calc_chemistry(neutrals, ions, time, gGrid, report);
+  if (physicsSwitches.chemistry) chemistry.calc_chemistry(neutrals, ions, time, gGrid, report);
   neutrals.add_sources(time, report);
   ions.calc_ion_temperature(neutrals, gGrid, time, input, report);
   ions.calc_electron_temperature(neutrals, gGrid, report);
