@@ -67,6 +67,26 @@ void Chemistry::calc_chemical_sources(Neutrals &neutrals,
         change3d = change3d / pow(reactions[iReaction].numerator/temp, reactions[iReaction].exponent);
       } else if (reactions[iReaction].numerator && (reactions[iReaction].type == 2)) {
         change3d = change3d % temp % exp(reactions[iReaction].numerator/temp);
+      } else if (reactions[iReaction].numerator && (reactions[iReaction].type == 3)) {
+        
+        temp = temp + 0.33 * pow(ions.efield_vcgc[0], 2) * pow(ions.efield_vcgc[1], 2)
+                           * pow(ions.efield_vcgc[2], 2); //.33 * E'^2
+
+        precision_t coeff_a, coeff_b, coeff_c;
+        if (denom == "12.9a") {
+          coeff_a = 1.533  * 0.000000000001;   //10^-12
+          coeff_b = -5.92  * 0.0000000000001;  //10^-13
+          coeff_c = 8.60   * 0.00000000000001; //10^-14
+        } else if (denom == "12.9b") {
+          coeff_a = 2.73   * 0.000000000001;   //10^-12
+          coeff_b = -1.155 * 0.000000000001;   //10^-12
+          coeff_c = 1.483  * 0.0000000000001;  //10^-13
+        }
+        
+        change3d.fill(coeff_a);
+        change3d += coeff_b * temp / 300;
+        change3d += coeff_c * pow(temp / 300, 2);
+        
       }
     }
 
